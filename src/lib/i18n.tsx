@@ -367,6 +367,13 @@ const translations = {
 
 
 const guideEnglish: Record<string, string> = {
+  "پوسته، رنگ تاکید و فونت فارسی را انتخاب کنید. تنظیمات روی همین دستگاه ذخیره می‌شود.": "Choose a theme, accent color, and font. Settings are saved on this device.",
+  "پوسته": "Theme",
+  "رنگ تاکید": "Accent color",
+  "فونت": "Font",
+  "رنگ تأکید": "Accent color",
+  "نمونه متن فارسی": "Sample Persian text",
+
   "شروع سریع": "Quick Start",
   "سیباموتور یک سامانه یکپارچه برای مدیریت کار تیمی، پیگیری انبار، وظایف و برنامه‌ریزی پروژه‌هاست. اگر برای اولین بار است که وارد این محیط شده‌اید، نگران نباشید؛ با طی کردن این ۵ قدم ساده می‌توانید کار خود را شروع کنید:": "SibaMotor is an integrated workspace for team collaboration, inventory tracking, task management, and project planning. If this is your first visit, do not worry: follow these five simple steps to get started:",
   "از منوی بالای صفحه یا بخش‌های سامانه، وارد «تخته» شوید. تخته شامل چند ستون (مرحله) است که کارها از ستون اول (مثل «در صف») تا ستون آخر (مثل «تمام‌شده») حرکت می‌کنند.": "Open Board from the top menu or workspace navigation. A board contains columns representing workflow stages, and tasks move from the first column (such as “Queued”) to the last (such as “Done”).",

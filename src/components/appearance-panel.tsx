@@ -84,7 +84,7 @@ export function AppearancePanel({ open, onOpenChange }: { open: boolean; onOpenC
         <section className="mt-5">
           <h3 className="mb-2 flex items-center gap-1.5 text-[12px] font-medium text-subtle">
             <Type className="size-3.5" />
-            فونت
+            {t("فونت")}
           </h3>
           <div className="grid gap-2">
             {FONTS.map((f) => {

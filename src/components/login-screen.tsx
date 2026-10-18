@@ -216,17 +216,10 @@ export function LoginScreen() {
 
       {/* Top action buttons */}
       <div className="absolute end-4 top-4 z-20 flex items-center gap-2">
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={toggleLanguage}
-          className="h-10 rounded-full border border-border/80 bg-bg-elevated/70 px-3.5 text-[13px] font-medium text-muted backdrop-blur-md transition hover:border-border-strong hover:text-fg"
-          title={isEn ? "تغییر به فارسی" : "Change to English"}
-        >
-          <Languages className="size-4 text-accent" />
-          <span className="uppercase">{lang}</span>
-        </Button>
+        <div role="group" aria-label="Language / زبان" className="inline-flex h-10 items-center rounded-full border border-border/80 bg-bg-elevated/70 p-1 text-[12px] font-semibold shadow-sm backdrop-blur-md">
+          <button type="button" onClick={() => { if (lang !== "fa") toggleLanguage(); }} aria-pressed={lang === "fa"} className={cn("h-8 rounded-full px-3 transition-colors", lang === "fa" ? "bg-accent text-accent-fg shadow-sm" : "text-muted hover:text-fg")}>فارسی</button>
+          <button type="button" onClick={() => { if (lang !== "en") toggleLanguage(); }} aria-pressed={lang === "en"} className={cn("h-8 rounded-full px-3 transition-colors", lang === "en" ? "bg-accent text-accent-fg shadow-sm" : "text-muted hover:text-fg")}>English</button>
+        </div>
         <button
           type="button"
           onClick={() => setAppearanceOpen(true)}
