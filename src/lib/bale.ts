@@ -16,18 +16,23 @@ export type BaleStatus = {
 export const getBaleStatus = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }): Promise<BaleStatus> => {
-    const bale = await import("./server/bale.server");
-    if (!bale.baleConfigured()) return { configured: false, linked: false, notify: false, botUsername: null };
-    const sql = await getSql();
-    const rows = await sql<{ bale_chat_id: string | null; bale_notify: boolean }>`
-      select bale_chat_id, bale_notify from login_users where username = ${context.user.username}
-    `;
-    return {
-      configured: true,
-      linked: Boolean(rows[0]?.bale_chat_id),
-      notify: Boolean(rows[0]?.bale_notify),
-      botUsername: await bale.baleBotUsername(),
-    };
+    try {
+      const bale = await import("./server/bale.server");
+      if (!bale.baleConfigured()) return { configured: false, linked: false, notify: false, botUsername: null };
+      const sql = await getSql();
+      const rows = await sql<{ bale_chat_id: string | null; bale_notify: boolean }>`
+        select bale_chat_id, bale_notify from login_users where username = ${context.user.username}
+      `;
+      return {
+        configured: true,
+        linked: Boolean(rows[0]?.bale_chat_id),
+        notify: Boolean(rows[0]?.bale_notify),
+        botUsername: await bale.baleBotUsername(),
+      };
+    } catch (err) {
+      console.error("[getBaleStatus error]:", err);
+      throw err;
+    }
   });
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
