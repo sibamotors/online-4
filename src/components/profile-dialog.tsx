@@ -112,7 +112,6 @@ export function ProfileDialog({ open, onOpenChange, onChangePassword }: Props) {
     if (!d || !pending) return;
     const next = { x: d.ox + (e.clientX - d.x), y: d.oy + (e.clientY - d.y) };
     const r = layout(pending.img, VIEW, zoom, next, 1);
-    // store the clamped value so the image never "sticks" outside the frame
     const base = layout(pending.img, VIEW, zoom, { x: 0, y: 0 }, 1);
     setOff({ x: r.x - base.x, y: r.y - base.y });
   }
@@ -124,7 +123,6 @@ export function ProfileDialog({ open, onOpenChange, onChangePassword }: Props) {
     mutationFn: async () => {
       if (!pending) throw new Error("تصویری انتخاب نشده است.");
       const canvas = document.createElement("canvas");
-      // the preview offset is in preview pixels → scale it to the output size
       draw(canvas, pending.img, OUT, OUT / VIEW);
       const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/jpeg", 0.88));
       if (!blob) throw new Error("ساخت تصویر ناموفق بود.");
@@ -253,9 +251,12 @@ export function ProfileDialog({ open, onOpenChange, onChangePassword }: Props) {
                   تغییر رمز عبور
                 </Button>
               )}
-              <BaleConnect />
             </>
           )}
+
+          {/* قرار گرفتن کامپوننت بله در بیرون از شرط تا همیشه نمایش داده شود */}
+          <BaleConnect />
+
         </div>
         <input
           ref={fileRef}
