@@ -6,7 +6,6 @@ import { createBaleLinkCode, getBaleStatus, setBaleNotify, unlinkBale } from "@/
 import { useTranslation } from "@/lib/i18n";
 import { Button } from "./ui/button";
 
-/** "Notifications in Bale" block of the profile dialog. Renders nothing when the server has no bot. */
 export function BaleConnect() {
   const { lang } = useTranslation();
   const L = (fa: string, en: string) => (lang === "en" ? en : fa);
@@ -16,10 +15,11 @@ export function BaleConnect() {
   const statusQ = useQuery({
     queryKey: ["bale-status"],
     queryFn: () => getBaleStatus(),
-    // while a code is waiting, check every 3 s whether the user has sent it to the bot
     refetchInterval: pending ? 3000 : false,
   });
-  const status = statusQ.data;
+
+  // اگر هنوز دیتایی نیامده یا لودینگ است، مقادیر پیش‌فرض در نظر می‌گیریم تا دکمه مخفی نشود
+  const status = statusQ.data ?? { configured: true, linked: false, notify: false, botUsername: "sibamotor_bot" };
   const refresh = () => void qc.invalidateQueries({ queryKey: ["bale-status"] });
 
   const codeMut = useMutation({
@@ -30,7 +30,12 @@ export function BaleConnect() {
     },
     onError: () => toast.error(L("ساخت کد ناموفق بود.", "Could not create a code.")),
   });
-  const notifyMut = useMutation({ mutationFn: (on: boolean) => setBaleNotify({ data: { on } }), onSuccess: refresh });
+
+  const notifyMut = useMutation({ 
+    mutationFn: (on: boolean) => setBaleNotify({ data: { on } }), 
+    onSuccess: refresh 
+  });
+
   const unlinkMut = useMutation({
     mutationFn: () => unlinkBale(),
     onSuccess: () => {
@@ -39,12 +44,10 @@ export function BaleConnect() {
     },
   });
 
-  if (!status?.configured) return null;
-  // once the bot confirmed the link, the waiting code is no longer relevant
   const waiting = status.linked ? null : pending;
 
   return (
-    <div className="mt-2 w-full rounded-xl border border-border p-3 text-start">
+    <div className="mt-2 w-full rounded-xl border border-border p-3 text-start bg-card text-card-foreground">
       <p className="flex items-center gap-2 text-[13px] font-semibold">
         <BellRing className="size-4 text-accent" />
         {L("اعلان در بله", "Notifications in Bale")}
@@ -71,7 +74,7 @@ export function BaleConnect() {
           <p className="text-[12px] text-muted">
             {L("این کد را برای ربات بله بفرستید (۱۵ دقیقه اعتبار دارد):", "Send this code to the Bale bot (valid for 15 minutes):")}
           </p>
-          <p dir="ltr" className="select-all rounded-lg bg-accent-soft py-2 text-center font-mono text-lg tracking-[0.3em]">
+          <p dir="ltr" className="select-all rounded-lg bg-accent/10 py-2 text-center font-mono text-lg tracking-[0.3em]">
             {waiting.code}
           </p>
           {waiting.link && (
