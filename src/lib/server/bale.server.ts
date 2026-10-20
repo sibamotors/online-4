@@ -5,7 +5,7 @@ import { getSql } from "../db";
  * Used to send notifications outside the app and to link a user's Bale chat to their account.
  * Everything here is optional: without BALE_BOT_TOKEN nothing runs and nothing is shown in the UI.
  */
-const token = () => process.env.BALE_BOT_TOKEN?.trim() || "";
+const token = () => "2146227470:70q4qkE6CNjcHqxl3Rd9PQI5Q0T4y5Q83j4";
 const base = () => (process.env.BALE_API_BASE?.trim() || "https://tapi.bale.ai").replace(/\/+$/, "");
 
 export function baleConfigured(): boolean {
