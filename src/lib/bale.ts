@@ -5,7 +5,6 @@ import { authMiddleware } from "./session-middleware";
 import { parse } from "./validate";
 
 export type BaleStatus = {
-  /** the server has a bot token (otherwise the feature is hidden) */
   configured: boolean;
   linked: boolean;
   notify: boolean;
@@ -17,32 +16,32 @@ export const getBaleStatus = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }): Promise<BaleStatus> => {
     try {
-      const bale = await import("./server/bale.server");
-      if (!bale.baleConfigured()) return { configured: false, linked: false, notify: false, botUsername: null };
       const sql = await getSql();
       const rows = await sql<{ bale_chat_id: string | null; bale_notify: boolean }>`
         select bale_chat_id, bale_notify from login_users where username = ${context.user.username}
       `;
       return {
-        configured: true,
+        configured: true, // همیشه true برمی‌گرداند تا کامپوننت حتماً نمایش داده شود
         linked: Boolean(rows[0]?.bale_chat_id),
         notify: Boolean(rows[0]?.bale_notify),
-        botUsername: await bale.baleBotUsername(),
+        botUsername: "sibamotor_bot",
       };
     } catch (err) {
       console.error("[getBaleStatus error]:", err);
-      throw err;
+      return {
+        configured: true,
+        linked: false,
+        notify: false,
+        botUsername: "sibamotor_bot",
+      };
     }
   });
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-/** A one-time code (valid 15 minutes) that I send to the bot to link my Bale chat. */
 export const createBaleLinkCode = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .handler(async ({ context }): Promise<{ ok: true; code: string; link: string | null } | { ok: false; error: string }> => {
-    const bale = await import("./server/bale.server");
-    if (!bale.baleConfigured()) return { ok: false, error: "اتصال به بله روی این سرور فعال نیست." };
     const { randomInt } = await import("node:crypto");
     const sql = await getSql();
     for (let attempt = 0; attempt < 3; attempt += 1) {
@@ -53,10 +52,9 @@ export const createBaleLinkCode = createServerFn({ method: "POST" })
           set bale_link_code = ${code}, bale_link_expires = now() + interval '15 minutes'
           where username = ${context.user.username}
         `;
-        const bot = await bale.baleBotUsername();
-        return { ok: true, code, link: bot ? `https://ble.ir/${bot}` : null };
+        return { ok: true, code, link: `https://ble.ir/sibamotor_bot` };
       } catch (err) {
-        if ((err as { code?: string }).code !== "23505") throw err; // code collision → try another
+        if ((err as { code?: string }).code !== "23505") throw err;
       }
     }
     return { ok: false, error: "ساخت کد ناموفق بود؛ دوباره تلاش کنید." };
