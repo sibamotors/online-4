@@ -162,7 +162,7 @@ export function ProfileDialog({ open, onOpenChange, onChangePassword }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm">
+      <DialogContent className="max-w-sm max-h-[90vh] overflow-y-auto">
         <DialogTitle>پروفایل من</DialogTitle>
         <DialogDescription>عکس پروفایل شما در پیام‌ها، گزارش‌ها و کارت‌ها برای همکاران دیده می‌شود.</DialogDescription>
 
@@ -254,8 +254,10 @@ export function ProfileDialog({ open, onOpenChange, onChangePassword }: Props) {
             </>
           )}
 
-          {/* قرار گرفتن کامپوننت بله در بیرون از شرط تا همیشه نمایش داده شود */}
-          <BaleConnect />
+          {/* کامپوننت بله - کاملاً جدا و همیشه خارج از شرط‌ها رندر می‌شود */}
+          <div className="w-full border-t border-border pt-3 mt-1">
+            <BaleConnect />
+          </div>
 
         </div>
         <input
