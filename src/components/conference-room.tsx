@@ -16,7 +16,11 @@ const selectCls = "h-9 w-full rounded-lg border border-border bg-surface px-2 te
 /** The conference room: the entry screen (start / join) and the call itself. */
 export function ConferenceRoom() {
   const conf = useConferenceCtx();
-  return conf.joined ? <InCall /> : <Entry />;
+  return (
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-bg">
+      {conf.joined ? <InCall /> : <Entry />}
+    </div>
+  );
 }
 
 // ---------------------------------------------------------------- entry
@@ -114,134 +118,134 @@ function Entry() {
   const room = conf.room;
 
   return (
-    <div className="k-scroll min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain">
-    <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-5 pb-28">
-      <header>
-        <h1 className="text-xl font-semibold tracking-tight">{L("اتاق کنفرانس", "Conference room")}</h1>
-        <p className="mt-0.5 text-[13px] text-muted">
-          {L("تماس صوتی و تصویری گروهی. هر کس اول کنفرانس را شروع کند، تا پایان کنفرانس مدیر اتاق است.", "Group audio and video calls. Whoever starts the conference first is the room's host until it ends.")}
-        </p>
-      </header>
+    <div className="k-scroll h-full min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain px-4 py-5 pb-28">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
+        <header>
+          <h1 className="text-xl font-semibold tracking-tight">{L("اتاق کنفرانس", "Conference room")}</h1>
+          <p className="mt-0.5 text-[13px] text-muted">
+            {L("تماس صوتی و تصویری گروهی. هر کس اول کنفرانس را شروع کند، تا پایان کنفرانس مدیر اتاق است.", "Group audio and video calls. Whoever starts the conference first is the room's host until it ends.")}
+          </p>
+        </header>
 
-      {!supported && (
-        <p className="rounded-xl border border-danger/40 bg-danger/5 p-3 text-[13px] text-danger">
-          {L(
-            "این مرورگر یا این آدرس از تماس صوتی و تصویری پشتیبانی نمی‌کند. سایت باید با HTTPS باز شود و مرورگر به‌روز باشد (Chrome، Edge، Firefox یا Safari).",
-            "This browser or address does not support audio/video calls. The site must be opened over HTTPS with an up-to-date browser (Chrome, Edge, Firefox or Safari).",
-          )}
-        </p>
-      )}
-      {isAdmin && !conf.hasTurn && (
-        <p className="rounded-xl border border-warning/40 bg-warning/5 p-3 text-[12px]">
-          {L(
-            "هشدار مدیر: سرور TURN تنظیم نشده است. برای کسانی که پشت شبکه‌های محدود (سازمان، اینترنت موبایل) هستند ممکن است تصویر و صدا وصل نشود. راهنما: deploy/conference-setup.md",
-            "Admin notice: no TURN server is configured. People on restricted networks (offices, mobile data) may not connect. See deploy/conference-setup.md.",
-          )}
-        </p>
-      )}
-
-      <section className="rounded-xl border border-border p-4">
-        {room ? (
-          <div className="space-y-2">
-            <p className="flex items-center gap-2 text-sm font-semibold">
-              <span className="size-2 animate-pulse rounded-full bg-success" aria-hidden />
-              {L(`کنفرانس «${room.title}» در جریان است`, `“${room.title}” is in progress`)}
-            </p>
-            <p className="text-[13px] text-muted">
-              {L("میزبان", "Host")}: {room.hostName} · {room.participants.length}/{room.max} {L("نفر", "people")}
-            </p>
-            <ul className="flex flex-wrap gap-2">
-              {room.participants.map((p) => (
-                <li key={p.username} className="flex items-center gap-1.5 rounded-full bg-surface-2 py-1 pe-3 ps-1 text-[12px]">
-                  <UserAvatar username={p.username} name={p.displayName} size="xs" />
-                  {p.displayName}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-sm font-semibold">{L("الان کنفرانسی در جریان نیست", "No conference is running right now")}</p>
-            <Input value={title} maxLength={80} placeholder={L("عنوان کنفرانس (اختیاری)", "Conference title (optional)")} onChange={(e) => setTitle(e.target.value)} />
-            <label className="flex items-center gap-2 text-[13px]">
-              <input type="checkbox" checked={notifyAll} onChange={(e) => setNotifyAll(e.target.checked)} />
-              {L("به همه‌ی کاربران خبر بده (اعلان)", "Notify everybody (notification)")}
-            </label>
-          </div>
+        {!supported && (
+          <p className="rounded-xl border border-danger/40 bg-danger/5 p-3 text-[13px] text-danger">
+            {L(
+              "این مرورگر یا این آدرس از تماس صوتی و تصویری پشتیبانی نمی‌کند. سایت باید با HTTPS باز شود و مرورگر به‌روز باشد (Chrome، Edge، Firefox یا Safari).",
+              "This browser or address does not support audio/video calls. The site must be opened over HTTPS with an up-to-date browser (Chrome, Edge, Firefox or Safari).",
+            )}
+          </p>
         )}
-      </section>
+        {isAdmin && !conf.hasTurn && (
+          <p className="rounded-xl border border-warning/40 bg-warning/5 p-3 text-[12px]">
+            {L(
+              "هشدار مدیر: سرور TURN تنظیم نشده است. برای کسانی که پشت شبکه‌های محدود (سازمان، اینترنت موبایل) هستند ممکن است تصویر و صدا وصل نشود. راهنما: deploy/conference-setup.md",
+              "Admin notice: no TURN server is configured. People on restricted networks (offices, mobile data) may not connect. See deploy/conference-setup.md.",
+            )}
+          </p>
+        )}
 
-      <section className="grid gap-4 rounded-xl border border-border p-4 sm:grid-cols-2">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold">{L("قبل از ورود", "Before you enter")}</p>
-          <label className="flex items-center gap-2 text-[13px]">
-            <input type="checkbox" checked={audio} onChange={(e) => setAudio(e.target.checked)} />
-            {L("با میکروفون روشن وارد شوم", "Join with the microphone on")}
-          </label>
-          <select className={selectCls} value={micId} onChange={(e) => setMicId(e.target.value)} disabled={!audio}>
-            <option value="">{L("میکروفون پیش‌فرض", "Default microphone")}</option>
-            {devices.mics.map((d, i) => (
-              <option key={d.deviceId || i} value={d.deviceId}>
-                {d.label || `${L("میکروفون", "Microphone")} ${i + 1}`}
-              </option>
-            ))}
-          </select>
-          <label className="flex items-center gap-2 text-[13px]">
-            <input type="checkbox" checked={video} onChange={(e) => setVideo(e.target.checked)} />
-            {L("با دوربین روشن وارد شوم", "Join with the camera on")}
-          </label>
-          <select className={selectCls} value={camId} onChange={(e) => setCamId(e.target.value)} disabled={!video}>
-            <option value="">{L("دوربین پیش‌فرض", "Default camera")}</option>
-            {devices.cams.map((d, i) => (
-              <option key={d.deviceId || i} value={d.deviceId}>
-                {d.label || `${L("دوربین", "Camera")} ${i + 1}`}
-              </option>
-            ))}
-          </select>
-          <Button size="sm" variant="secondary" disabled={!supported || (!audio && !video)} onClick={() => void startPreview()}>
-            {L("آزمایش دوربین و میکروفون", "Test camera and microphone")}
-          </Button>
-          {preview && (
-            <div className="h-2 overflow-hidden rounded-full bg-surface-2" aria-label={L("سطح صدای میکروفون", "Microphone level")}>
-              <div className="h-full bg-success transition-[width]" style={{ width: `${level}%` }} />
+        <section className="rounded-xl border border-border p-4">
+          {room ? (
+            <div className="space-y-2">
+              <p className="flex items-center gap-2 text-sm font-semibold">
+                <span className="size-2 animate-pulse rounded-full bg-success" aria-hidden />
+                {L(`کنفرانس «${room.title}» در جریان است`, `“${room.title}” is in progress`)}
+              </p>
+              <p className="text-[13px] text-muted">
+                {L("میزبان", "Host")}: {room.hostName} · {room.participants.length}/{room.max} {L("نفر", "people")}
+              </p>
+              <ul className="flex flex-wrap gap-2">
+                {room.participants.map((p) => (
+                  <li key={p.username} className="flex items-center gap-1.5 rounded-full bg-surface-2 py-1 pe-3 ps-1 text-[12px]">
+                    <UserAvatar username={p.username} name={p.displayName} size="xs" />
+                    {p.displayName}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-sm font-semibold">{L("الان کنفرانسی در جریان نیست", "No conference is running right now")}</p>
+              <Input value={title} maxLength={80} placeholder={L("عنوان کنفرانس (اختیاری)", "Conference title (optional)")} onChange={(e) => setTitle(e.target.value)} />
+              <label className="flex items-center gap-2 text-[13px]">
+                <input type="checkbox" checked={notifyAll} onChange={(e) => setNotifyAll(e.target.checked)} />
+                {L("به همه‌ی کاربران خبر بده (اعلان)", "Notify everybody (notification)")}
+              </label>
             </div>
           )}
-        </div>
-        <div className="grid place-items-center rounded-lg bg-black/80">
-          {preview && preview.getVideoTracks().length > 0 ? (
-            <video ref={videoEl} autoPlay muted playsInline className="aspect-video w-full rounded-lg object-cover [transform:scaleX(-1)]" />
+        </section>
+
+        <section className="grid gap-4 rounded-xl border border-border p-4 sm:grid-cols-2">
+          <div className="space-y-3">
+            <p className="text-sm font-semibold">{L("قبل از ورود", "Before you enter")}</p>
+            <label className="flex items-center gap-2 text-[13px]">
+              <input type="checkbox" checked={audio} onChange={(e) => setAudio(e.target.checked)} />
+              {L("با میکروفون روشن وارد شوم", "Join with the microphone on")}
+            </label>
+            <select className={selectCls} value={micId} onChange={(e) => setMicId(e.target.value)} disabled={!audio}>
+              <option value="">{L("میکروفون پیش‌فرض", "Default microphone")}</option>
+              {devices.mics.map((d, i) => (
+                <option key={d.deviceId || i} value={d.deviceId}>
+                  {d.label || `${L("میکروفون", "Microphone")} ${i + 1}`}
+                </option>
+              ))}
+            </select>
+            <label className="flex items-center gap-2 text-[13px]">
+              <input type="checkbox" checked={video} onChange={(e) => setVideo(e.target.checked)} />
+              {L("با دوربین روشن وارد شوم", "Join with the camera on")}
+            </label>
+            <select className={selectCls} value={camId} onChange={(e) => setCamId(e.target.value)} disabled={!video}>
+              <option value="">{L("دوربین پیش‌فرض", "Default camera")}</option>
+              {devices.cams.map((d, i) => (
+                <option key={d.deviceId || i} value={d.deviceId}>
+                  {d.label || `${L("دوربین", "Camera")} ${i + 1}`}
+                </option>
+              ))}
+            </select>
+            <Button size="sm" variant="secondary" disabled={!supported || (!audio && !video)} onClick={() => void startPreview()}>
+              {L("آزمایش دوربین و میکروفون", "Test camera and microphone")}
+            </Button>
+            {preview && (
+              <div className="h-2 overflow-hidden rounded-full bg-surface-2" aria-label={L("سطح صدای میکروفون", "Microphone level")}>
+                <div className="h-full bg-success transition-[width]" style={{ width: `${level}%` }} />
+              </div>
+            )}
+          </div>
+          <div className="grid place-items-center rounded-lg bg-black/80">
+            {preview && preview.getVideoTracks().length > 0 ? (
+              <video ref={videoEl} autoPlay muted playsInline className="aspect-video w-full rounded-lg object-cover [transform:scaleX(-1)]" />
+            ) : (
+              <p className="p-6 text-center text-[12px] text-white/70">{L("پیش‌نمایش دوربین اینجا دیده می‌شود", "The camera preview appears here")}</p>
+            )}
+          </div>
+        </section>
+
+        {conf.error && <p className="text-[13px] text-danger">{conf.error}</p>}
+
+        <div className="sticky bottom-3 z-10 [&>button]:w-full sm:[&>button]:w-auto">
+          {room ? (
+            <Button disabled={!supported || conf.busy || room.participants.length >= room.max} onClick={() => void go(() => conf.join(choice()))}>
+              <Video className="size-4" />
+              {conf.busy ? L("در حال ورود…", "Joining…") : L("ورود به کنفرانس", "Join the conference")}
+            </Button>
           ) : (
-            <p className="p-6 text-center text-[12px] text-white/70">{L("پیش‌نمایش دوربین اینجا دیده می‌شود", "The camera preview appears here")}</p>
+            <Button disabled={!supported || conf.busy} onClick={() => void go(() => conf.start(title, notifyAll, choice()))}>
+              <Video className="size-4" />
+              {conf.busy ? L("در حال شروع…", "Starting…") : L("شروع کنفرانس (شما میزبان می‌شوید)", "Start the conference (you become the host)")}
+            </Button>
           )}
         </div>
-      </section>
 
-      {conf.error && <p className="text-[13px] text-danger">{conf.error}</p>}
-
-      <div className="sticky bottom-3 z-10 [&>button]:w-full sm:[&>button]:w-auto">
-        {room ? (
-          <Button disabled={!supported || conf.busy || room.participants.length >= room.max} onClick={() => void go(() => conf.join(choice()))}>
-            <Video className="size-4" />
-            {conf.busy ? L("در حال ورود…", "Joining…") : L("ورود به کنفرانس", "Join the conference")}
-          </Button>
-        ) : (
-          <Button disabled={!supported || conf.busy} onClick={() => void go(() => conf.start(title, notifyAll, choice()))}>
-            <Video className="size-4" />
-            {conf.busy ? L("در حال شروع…", "Starting…") : L("شروع کنفرانس (شما میزبان می‌شوید)", "Start the conference (you become the host)")}
-          </Button>
-        )}
+        <section className="rounded-xl border border-border p-4 text-[12px] text-muted">
+          <p className="mb-1 text-[13px] font-semibold text-fg">{L("نکته‌ها و الزامات", "Notes and requirements")}</p>
+          <ul className="list-disc space-y-1 ps-5">
+            <li>{L("سایت باید با HTTPS باز شود و در اولین بار مرورگر اجازه‌ی میکروفون و دوربین را می‌پرسد.", "The site must be opened over HTTPS and the browser asks for microphone and camera permission the first time.")}</li>
+            <li>{L("برای کیفیت بهتر از هدفون استفاده کنید تا پژواک ایجاد نشود.", "Use headphones for better quality, to avoid echo.")}</li>
+            <li>{L("هر نفر تصویر خودش را برای همه‌ی دیگران جداگانه می‌فرستد، پس اتاق برای حداکثر ۸ نفر طراحی شده و دوربین زیاد اینترنت می‌خواهد؛ اگر اینترنت ضعیف است فقط با صدا شرکت کنید.", "Each person sends their video to everybody else separately, so the room is designed for up to 8 people and cameras use a lot of bandwidth; on a weak connection join with audio only.")}</li>
+            <li>{L("اشتراک صفحه فقط روی کامپیوتر پشتیبانی می‌شود. مدیر اتاق می‌تواند افراد را بی‌صدا یا خارج کند و کنفرانس را برای همه تمام کند.", "Screen sharing works on computers only. The host can mute or remove people and end the conference for everybody.")}</li>
+          </ul>
+        </section>
       </div>
-
-      <section className="rounded-xl border border-border p-4 text-[12px] text-muted">
-        <p className="mb-1 text-[13px] font-semibold text-fg">{L("نکته‌ها و الزامات", "Notes and requirements")}</p>
-        <ul className="list-disc space-y-1 ps-5">
-          <li>{L("سایت باید با HTTPS باز شود و در اولین بار مرورگر اجازه‌ی میکروفون و دوربین را می‌پرسد.", "The site must be opened over HTTPS and the browser asks for microphone and camera permission the first time.")}</li>
-          <li>{L("برای کیفیت بهتر از هدفون استفاده کنید تا پژواک ایجاد نشود.", "Use headphones for better quality, to avoid echo.")}</li>
-          <li>{L("هر نفر تصویر خودش را برای همه‌ی دیگران جداگانه می‌فرستد، پس اتاق برای حداکثر ۸ نفر طراحی شده و دوربین زیاد اینترنت می‌خواهد؛ اگر اینترنت ضعیف است فقط با صدا شرکت کنید.", "Each person sends their video to everybody else separately, so the room is designed for up to 8 people and cameras use a lot of bandwidth; on a weak connection join with audio only.")}</li>
-          <li>{L("اشتراک صفحه فقط روی کامپیوتر پشتیبانی می‌شود. مدیر اتاق می‌تواند افراد را بی‌صدا یا خارج کند و کنفرانس را برای همه تمام کند.", "Screen sharing works on computers only. The host can mute or remove people and end the conference for everybody.")}</li>
-        </ul>
-      </section>
-    </div>
     </div>
   );
 }
