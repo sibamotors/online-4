@@ -114,7 +114,7 @@ function Entry() {
   const room = conf.room;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-5 pb-24">
+    <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-5 pb-24 overflow-y-auto k-scroll">
       <header>
         <h1 className="text-xl font-semibold tracking-tight">{L("اتاق کنفرانس", "Conference room")}</h1>
         <p className="mt-0.5 text-[13px] text-muted">
